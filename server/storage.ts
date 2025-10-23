@@ -96,7 +96,7 @@ export class MemStorage implements IStorage {
       duration: 60,
       price: 150,
       description: "Perfect for targeted relief and relaxation",
-      isRecommended: false,
+      isRecommended: 0,
     };
     const pricing90: Pricing = {
       id: randomUUID(),
@@ -104,7 +104,7 @@ export class MemStorage implements IStorage {
       duration: 90,
       price: 220,
       description: "Full-body deep tissue experience",
-      isRecommended: true,
+      isRecommended: 1,
     };
     this.pricings.set(pricing60.id, pricing60);
     this.pricings.set(pricing90.id, pricing90);
@@ -170,7 +170,7 @@ export class MemStorage implements IStorage {
       title: "THIS WEEK (until Oct. 11)",
       description: "$30 Outcall Fee - Mobile massage available throughout San Antonio",
       validUntil: "Oct. 11",
-      isActive: true,
+      isActive: 1,
     };
     this.specials.set(special.id, special);
   }
@@ -182,7 +182,11 @@ export class MemStorage implements IStorage {
   async createTherapistProfile(insertProfile: InsertTherapistProfile): Promise<TherapistProfile> {
     const id = randomUUID();
     const profile: TherapistProfile = { 
-      ...insertProfile, 
+      ...insertProfile,
+      techniques: insertProfile.techniques as string[],
+      amenities: insertProfile.amenities as string[],
+      affiliations: insertProfile.affiliations as string[],
+      gallery: insertProfile.gallery as string[],
       id, 
       createdAt: new Date() 
     };
@@ -198,7 +202,11 @@ export class MemStorage implements IStorage {
 
   async createTravelSchedule(insertSchedule: InsertTravelSchedule): Promise<TravelSchedule> {
     const id = randomUUID();
-    const schedule: TravelSchedule = { ...insertSchedule, id };
+    const schedule: TravelSchedule = { 
+      ...insertSchedule, 
+      id,
+      isCurrent: insertSchedule.isCurrent ?? 0 
+    };
     this.travelSchedules.set(id, schedule);
     return schedule;
   }
@@ -211,7 +219,12 @@ export class MemStorage implements IStorage {
 
   async createPricing(insertPricing: InsertPricing): Promise<Pricing> {
     const id = randomUUID();
-    const pricing: Pricing = { ...insertPricing, id };
+    const pricing: Pricing = { 
+      ...insertPricing, 
+      id,
+      description: insertPricing.description ?? null,
+      isRecommended: insertPricing.isRecommended ?? 0
+    };
     this.pricings.set(id, pricing);
     return pricing;
   }
@@ -237,7 +250,11 @@ export class MemStorage implements IStorage {
 
   async createSpecial(insertSpecial: InsertSpecial): Promise<Special> {
     const id = randomUUID();
-    const special: Special = { ...insertSpecial, id };
+    const special: Special = { 
+      ...insertSpecial, 
+      id,
+      isActive: insertSpecial.isActive ?? 1
+    };
     this.specials.set(id, special);
     return special;
   }

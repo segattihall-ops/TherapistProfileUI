@@ -10,7 +10,9 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={() => <TherapistProfile therapistId="bruno-massage-therapist" />} />
-      <Route path="/therapist/:id" component={TherapistProfile} />
+      <Route path="/therapist/:id">
+        {(params) => <TherapistProfile therapistId={params.id} />}
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

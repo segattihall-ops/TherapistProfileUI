@@ -1,25 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "wouter";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import ImageGallery from "@/components/image-gallery";
-import TestimonialCard from "@/components/testimonial-card";
-import PriceCard from "@/components/price-card";
+import ImageGallery from "../components/image-gallery";
+import TestimonialCard from "../components/testimonial-card";
+import PriceCard from "../components/price-card";
 import { Phone, MessageSquare, Heart, Star, MapPin, Clock, User, Shield } from "lucide-react";
+import type { TherapistProfile as TherapistProfileType, TravelSchedule, Pricing, Testimonial, Special } from "@shared/schema";
 
 interface TherapistProfileProps {
   therapistId?: string;
 }
 
+interface TherapistData {
+  profile: TherapistProfileType;
+  travelSchedule: TravelSchedule[];
+  pricing: Pricing[];
+  testimonials: Testimonial[];
+  specials: Special[];
+}
+
 export default function TherapistProfile({ therapistId: propTherapistId }: TherapistProfileProps) {
-  const params = useParams();
-  const therapistId = propTherapistId || params.id || "bruno-massage-therapist";
+  const therapistId = propTherapistId || "bruno-massage-therapist";
   const [isSaved, setIsSaved] = useState(false);
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<TherapistData>({
     queryKey: ["/api/therapist", therapistId],
   });
 
@@ -80,18 +87,18 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </header>
 
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-start">
             {/* Gallery */}
             <ImageGallery images={profile.gallery} />
 
             {/* Profile Info */}
             <div className="space-y-6">
               <div>
-                <h1 className="text-4xl sm:text-5xl font-bold font-display mb-2 section-title">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-2 section-title">
                   {profile.name}
                 </h1>
-                <p className="text-lg text-muted-foreground">{profile.title}</p>
+                <p className="text-base sm:text-lg text-muted-foreground">{profile.title}</p>
               </div>
 
               {/* Action Buttons */}
@@ -163,11 +170,11 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </section>
 
         {/* Overview Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <Card className="bg-card border-border rounded-2xl relative overflow-hidden">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <Card className="bg-card border-border rounded-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
-            <CardContent className="p-8 sm:p-12 relative z-10">
-              <h2 className="text-3xl font-bold font-display mb-6 section-title">Overview</h2>
+            <CardContent className="p-6 sm:p-10 relative z-10">
+              <h2 className="text-2xl sm:text-3xl font-bold font-display mb-4 sm:mb-6 section-title">Overview</h2>
               <div className="prose prose-invert max-w-none">
                 <h3 className="text-xl font-semibold text-foreground mb-4">Brazilian Male Massage by Bruno — Deep Tissue, Swedish, & Sports Massage</h3>
                 {profile.bio.split('\n\n').map((paragraph: string, index: number) => (
@@ -181,8 +188,8 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </section>
 
         {/* Travel Schedule */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <h2 className="text-3xl font-bold font-display mb-8 section-title">Travel Schedule</h2>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-6 section-title">Travel Schedule</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {currentLocation && (
               <Card className="bg-gradient-to-br from-primary/20 to-secondary/10 border-primary/30 rounded-2xl relative overflow-hidden">
@@ -213,10 +220,10 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </section>
 
         {/* Pricing */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <h2 className="text-3xl font-bold font-display mb-8 section-title">Rates</h2>
-          <Card className="bg-card border-border rounded-2xl">
-            <CardContent className="p-8 sm:p-12">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-6 section-title">Rates</h2>
+          <Card className="bg-card border-border rounded-xl">
+            <CardContent className="p-6 sm:p-10">
               <p className="text-lg text-muted-foreground mb-8">Spa-quality bodywork, tailored to you, blending Deep Tissue, Shiatsu & Swedish</p>
               
               <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -245,11 +252,11 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
 
         {/* Specials */}
         {specials.length > 0 && (
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
             {specials.map((special: any) => (
-              <div key={special.id} className="bg-gradient-to-r from-accent via-primary to-secondary p-1 rounded-2xl">
-                <Card className="bg-background rounded-xl text-center">
-                  <CardContent className="p-8 sm:p-12">
+              <div key={special.id} className="bg-gradient-to-r from-accent via-primary to-secondary p-1 rounded-xl">
+                <Card className="bg-background rounded-lg text-center">
+                  <CardContent className="p-6 sm:p-10">
                     <Badge className="bg-accent/20 text-accent font-semibold mb-4">
                       <Star className="w-5 h-5 mr-2 animate-float fill-current" />
                       Limited Time Offer
@@ -264,8 +271,8 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         )}
 
         {/* Additional Info */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <h2 className="text-3xl font-bold font-display mb-8 section-title">Additional Information</h2>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-6 section-title">Additional Information</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="bg-card border-border rounded-2xl">
               <CardContent className="p-6">
@@ -324,20 +331,14 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </section>
 
         {/* Testimonials */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <h2 className="text-3xl font-bold font-display mb-4 section-title">Client Testimonials</h2>
-          <p className="text-muted-foreground mb-8">Gathered by Bruno from admiring massage clients to share with you.</p>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-3 section-title">Client Testimonials</h2>
+          <p className="text-sm text-muted-foreground mb-6">Gathered by Bruno from admiring massage clients to share with you.</p>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {testimonials.map((testimonial: any) => (
               <TestimonialCard key={testimonial.id} testimonial={testimonial} />
             ))}
-          </div>
-
-          <div className="mt-8 text-center">
-            <Button className="px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-lg hover:opacity-90 transition-all duration-300 floating-action">
-              View All Testimonials
-            </Button>
           </div>
         </section>
 
