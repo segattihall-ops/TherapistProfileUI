@@ -47,7 +47,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
   }
 
   const { profile, travelSchedule, pricing, testimonials, specials } = data;
-  const currentLocation = travelSchedule.find((s: any) => s.isCurrent);
+  const currentLocation = travelSchedule.find((s) => s.isCurrent === 1);
 
   const handleCall = () => {
     window.location.href = `tel:${profile.phone.replace(/[^\d]/g, '')}`;
@@ -143,7 +143,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
                   <CardContent className="p-4">
                     <div className="text-sm text-muted-foreground mb-1">Services</div>
                     <div className="font-semibold">{profile.services}</div>
-                    <div className="text-sm text-muted-foreground mt-1">Starting at ${Math.min(...pricing.map((p: any) => p.price))}</div>
+                    <div className="text-sm text-muted-foreground mt-1">Starting at ${Math.min(...pricing.map((p) => p.price))}</div>
                   </CardContent>
                 </Card>
                 <Card className="bg-card border-border">
@@ -227,7 +227,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
               <p className="text-lg text-muted-foreground mb-8">Spa-quality bodywork, tailored to you, blending Deep Tissue, Shiatsu & Swedish</p>
               
               <div className="grid md:grid-cols-2 gap-6 mb-8">
-                {pricing.map((price: any) => (
+                {pricing.map((price) => (
                   <PriceCard key={price.id} pricing={price} />
                 ))}
               </div>
@@ -253,7 +253,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         {/* Specials */}
         {specials.length > 0 && (
           <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-            {specials.map((special: any) => (
+            {specials.map((special) => (
               <div key={special.id} className="bg-gradient-to-r from-accent via-primary to-secondary p-1 rounded-xl">
                 <Card className="bg-background rounded-lg text-center">
                   <CardContent className="p-6 sm:p-10">
@@ -336,7 +336,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
           <p className="text-sm text-muted-foreground mb-6">Gathered by Bruno from admiring massage clients to share with you.</p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {testimonials.map((testimonial: any) => (
+            {testimonials.map((testimonial) => (
               <TestimonialCard key={testimonial.id} testimonial={testimonial} />
             ))}
           </div>

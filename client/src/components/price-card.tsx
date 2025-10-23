@@ -6,8 +6,8 @@ interface PriceCardProps {
     id: string;
     duration: number;
     price: number;
-    description?: string;
-    isRecommended: boolean;
+    description: string | null;
+    isRecommended: number;
   };
 }
 
@@ -15,7 +15,7 @@ export default function PriceCard({ pricing }: PriceCardProps) {
   return (
     <Card 
       className={`price-card rounded-xl hover:border-primary/50 transition-all duration-300 ${
-        pricing.isRecommended 
+        pricing.isRecommended === 1
           ? 'bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/30' 
           : 'bg-gradient-to-br from-muted to-card border-border'
       }`}
@@ -27,7 +27,7 @@ export default function PriceCard({ pricing }: PriceCardProps) {
             <h3 className="text-xl font-bold" data-testid={`text-duration-${pricing.id}`}>
               {pricing.duration} minutes
             </h3>
-            {pricing.isRecommended && (
+            {pricing.isRecommended === 1 && (
               <Badge className="bg-primary/20 text-primary mt-1">
                 Recommended
               </Badge>

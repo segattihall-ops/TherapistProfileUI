@@ -27,7 +27,7 @@ export const travelSchedule = pgTable("travel_schedule", {
   location: text("location").notNull(),
   startDate: text("start_date").notNull(),
   endDate: text("end_date").notNull(),
-  isCurrent: integer("is_current", { mode: "boolean" }).notNull().default(0),
+  isCurrent: integer("is_current").notNull().default(0),
 });
 
 export const pricing = pgTable("pricing", {
@@ -36,7 +36,7 @@ export const pricing = pgTable("pricing", {
   duration: integer("duration").notNull(),
   price: integer("price").notNull(),
   description: text("description"),
-  isRecommended: integer("is_recommended", { mode: "boolean" }).notNull().default(0),
+  isRecommended: integer("is_recommended").notNull().default(0),
 });
 
 export const testimonials = pgTable("testimonials", {
@@ -56,7 +56,7 @@ export const specials = pgTable("specials", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   validUntil: text("valid_until").notNull(),
-  isActive: integer("is_active", { mode: "boolean" }).notNull().default(1),
+  isActive: integer("is_active").notNull().default(1),
 });
 
 export const insertTherapistProfileSchema = createInsertSchema(therapistProfiles).omit({
