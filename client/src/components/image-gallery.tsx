@@ -38,6 +38,12 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 setActiveImage(index);
+              } else if (e.key === 'ArrowLeft' && index > 0) {
+                e.preventDefault();
+                setActiveImage(index - 1);
+              } else if (e.key === 'ArrowRight' && index < images.length - 1) {
+                e.preventDefault();
+                setActiveImage(index + 1);
               }
             }}
             aria-label={`View image ${index + 1}`}

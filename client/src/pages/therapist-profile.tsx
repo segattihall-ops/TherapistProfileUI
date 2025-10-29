@@ -48,7 +48,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         "addressLocality": profile.location,
         "addressRegion": profile.homeBase
       },
-      "priceRange": `$${Math.min(...pricing.map((p) => p.price))} - $${Math.max(...pricing.map((p) => p.price))}`,
+      "priceRange": pricing.length > 0 ? `$${Math.min(...pricing.map((p) => p.price))} - $${Math.max(...pricing.map((p) => p.price))}` : "$$",
       "openingHours": profile.availability,
       "@id": `https://massagefinder.com/therapist/${therapistId}`,
       "serviceType": profile.services,
@@ -421,19 +421,34 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         {/* Footer Gallery */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16" aria-label="Image gallery">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {profile.gallery.map((image: string, index: number) => (
-              <div key={index} className="relative rounded-xl overflow-hidden aspect-square bg-muted">
-                <img 
-                  src={image} 
-                  alt={`${profile.name} massage therapy workspace and environment - image ${index + 1}`}
-                  className="w-full h-full object-cover gallery-image cursor-pointer"
-                  width="300"
-                  height="300"
-                  loading="lazy"
-                  data-testid={`img-gallery-${index}`}
-                />
-              </div>
-            ))}
+            {profile.gallery.map((image: string, index: number) => {
+              // Generate more descriptive alt text based on context
+              const altDescriptions = [
+                `${profile.name}'s massage therapy studio interior`,
+                `Professional massage table setup at ${profile.name}'s practice`,
+                `Relaxing massage therapy environment by ${profile.name}`,
+                `${profile.name}'s massage workspace showing professional amenities`,
+                `Massage therapy room ambiance at ${profile.name}'s studio`,
+                `${profile.name}'s professional massage therapy setup`,
+                `Interior view of ${profile.name}'s massage practice`,
+                `${profile.name}'s massage therapy workspace details`
+              ];
+              const altText = altDescriptions[index] || `${profile.name}'s massage therapy workspace - image ${index + 1}`;
+              
+              return (
+                <div key={index} className="relative rounded-xl overflow-hidden aspect-square bg-muted">
+                  <img 
+                    src={image} 
+                    alt={altText}
+                    className="w-full h-full object-cover gallery-image cursor-pointer"
+                    width="300"
+                    height="300"
+                    loading="lazy"
+                    data-testid={`img-gallery-${index}`}
+                  />
+                </div>
+              );
+            })}
           </div>
         </section>
 
