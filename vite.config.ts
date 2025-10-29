@@ -47,6 +47,7 @@ export default defineConfig({
           if (id.includes('node_modules/@tanstack/react-query')) {
             return 'query';
           }
+          return undefined;
         },
       },
     },
