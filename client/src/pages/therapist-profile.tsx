@@ -74,7 +74,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="text-2xl font-bold font-display bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                MasseurFinder
+                MasseurMatch
               </div>
               <nav className="hidden md:flex space-x-8 text-sm font-medium">
                 <a href="#" className="text-muted-foreground hover:text-foreground transition">Home</a>
@@ -362,7 +362,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         <footer className="border-t border-border mt-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-              <div>© 2025 MasseurFinder. All rights reserved.</div>
+              <div>© 2025 MasseurMatch. All rights reserved.</div>
               <div className="flex gap-6">
                 <a href="#" className="hover:text-foreground transition">Terms of Service</a>
                 <a href="#" className="hover:text-foreground transition">Privacy Policy</a>
