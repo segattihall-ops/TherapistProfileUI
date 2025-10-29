@@ -10,6 +10,7 @@
     <meta name="description" content="Find professional massage therapists specializing in deep tissue, Swedish, sports massage, and more. Book your therapeutic massage session today." />
     <meta name="keywords" content="massage therapist, deep tissue massage, Swedish massage, sports massage, professional massage, therapeutic massage" />
     <meta name="author" content="MasseurFinder" />
+    <meta name="theme-color" content="#3B82F6" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -24,16 +25,17 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
     
-    <!-- Preconnect to Google Fonts -->
+    <!-- DNS Prefetch & Preconnect -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
     <!-- Only load fonts actually used in the app - Inter and Space Grotesk -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
-    
-    <!-- Security -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;" />
   </head>
   <body>
     <div id="root"></div>
