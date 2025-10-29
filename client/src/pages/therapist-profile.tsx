@@ -85,7 +85,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
     
     let metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', `${profile.name}, ${profile.title} in ${profile.location}. Specializing in ${profile.techniques.join(', ')}. ${profile.experience}+ years experience.`);
+      metaDescription.setAttribute('content', `${profile.name}, ${profile.title} in ${profile.location}. Specializing in ${(profile.techniques ?? []).join(', ')}. ${profile.experience}+ years experience.`);
     }
 
     return () => {
