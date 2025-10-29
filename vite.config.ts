@@ -34,10 +34,19 @@ export default defineConfig({
     minify: 'esbuild',
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'radix-ui': ['@radix-ui/react-accordion', '@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-separator', '@radix-ui/react-slot'],
-          'query': ['@tanstack/react-query'],
+        manualChunks: (id) => {
+          // Group all React packages
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'react-vendor';
+          }
+          // Group all Radix UI packages
+          if (id.includes('node_modules/@radix-ui')) {
+            return 'radix-ui';
+          }
+          // Group React Query
+          if (id.includes('node_modules/@tanstack/react-query')) {
+            return 'query';
+          }
         },
       },
     },
