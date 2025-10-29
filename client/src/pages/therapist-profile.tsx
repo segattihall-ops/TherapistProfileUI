@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,10 +30,76 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
     queryKey: ["/api/therapist", therapistId],
   });
 
+  // Add structured data for SEO
+  useEffect(() => {
+    if (!data) return;
+
+    const { profile, pricing } = data;
+    
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": profile.name,
+      "description": profile.bio,
+      "image": profile.gallery,
+      "telephone": profile.phone,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": profile.location,
+        "addressRegion": profile.homeBase
+      },
+      "priceRange": pricing.length > 0 ? `$${Math.min(...pricing.map((p) => p.price))} - $${Math.max(...pricing.map((p) => p.price))}` : "$$",
+      "openingHours": profile.availability,
+      "@id": `https://massagefinder.com/therapist/${therapistId}`,
+      "serviceType": profile.services,
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Massage Services",
+        "itemListElement": pricing.map(p => ({
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": p.duration
+          },
+          "price": p.price,
+          "priceCurrency": "USD"
+        }))
+      }
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(structuredData);
+    script.id = 'structured-data';
+    
+    // Remove existing script if present
+    const existing = document.getElementById('structured-data');
+    if (existing) {
+      existing.remove();
+    }
+    
+    document.head.appendChild(script);
+
+    // Update page title and meta description
+    document.title = `${profile.name} - ${profile.title} | MasseurFinder`;
+    
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', `${profile.name}, ${profile.title} in ${profile.location}. Specializing in ${(profile.techniques ?? []).join(', ')}. ${profile.experience}+ years experience.`);
+    }
+
+    return () => {
+      const scriptToRemove = document.getElementById('structured-data');
+      if (scriptToRemove) {
+        scriptToRemove.remove();
+      }
+    };
+  }, [data, therapistId]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background cosmic-grid flex items-center justify-center">
-        <div className="text-xl text-muted-foreground">Loading...</div>
+        <div className="text-xl text-muted-foreground" role="status" aria-live="polite">Loading...</div>
       </div>
     );
   }
@@ -41,7 +107,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
   if (error || !data) {
     return (
       <div className="min-h-screen bg-background cosmic-grid flex items-center justify-center">
-        <div className="text-xl text-destructive">Error loading therapist profile</div>
+        <div className="text-xl text-destructive" role="alert">Error loading therapist profile</div>
       </div>
     );
   }
@@ -63,20 +129,25 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
 
   return (
     <div className="min-h-screen bg-background text-foreground cosmic-grid">
+      {/* Skip to main content link for accessibility */}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded">
+        Skip to main content
+      </a>
+
       {/* Geometric Background Accents */}
-      <div className="geometric-accent w-96 h-96 bg-primary top-0 right-0"></div>
-      <div className="geometric-accent w-80 h-80 bg-secondary bottom-20 left-10"></div>
-      <div className="geometric-accent w-64 h-64 bg-accent top-1/2 right-1/3"></div>
+      <div className="geometric-accent w-96 h-96 bg-primary top-0 right-0" aria-hidden="true"></div>
+      <div className="geometric-accent w-80 h-80 bg-secondary bottom-20 left-10" aria-hidden="true"></div>
+      <div className="geometric-accent w-64 h-64 bg-accent top-1/2 right-1/3" aria-hidden="true"></div>
 
       <div className="relative z-10">
         {/* Header */}
-        <header className="border-b border-border">
+        <header className="border-b border-border" role="banner">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="text-2xl font-bold font-display bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 MasseurMatch
               </div>
-              <nav className="hidden md:flex space-x-8 text-sm font-medium">
+              <nav className="hidden md:flex space-x-8 text-sm font-medium" role="navigation" aria-label="Main navigation">
                 <a href="#" className="text-muted-foreground hover:text-foreground transition">Home</a>
                 <a href="#" className="text-muted-foreground hover:text-foreground transition">Find Therapists</a>
                 <a href="#" className="text-muted-foreground hover:text-foreground transition">About</a>
@@ -87,48 +158,53 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </header>
 
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-          <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-start">
-            {/* Gallery */}
-            <ImageGallery images={profile.gallery} />
+        <main id="main-content">
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-start">
+              {/* Gallery */}
+              <ImageGallery images={profile.gallery} />
 
-            {/* Profile Info */}
-            <div className="space-y-6">
-              <div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-2 section-title">
-                  {profile.name}
-                </h1>
-                <p className="text-base sm:text-lg text-muted-foreground">{profile.title}</p>
-              </div>
+              {/* Profile Info */}
+              <div className="space-y-6">
+                <div>
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-2 section-title">
+                    {profile.name}
+                  </h1>
+                  <p className="text-base sm:text-lg text-muted-foreground">{profile.title}</p>
+                </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-3">
-                <Button 
-                  onClick={handleCall}
-                  className="floating-action px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold flex items-center gap-2 hover:bg-primary/90"
-                  data-testid="button-call"
-                >
-                  <Phone className="w-5 h-5" />
-                  Call
-                </Button>
-                <Button 
-                  onClick={handleText}
-                  className="floating-action px-6 py-3 bg-secondary text-secondary-foreground rounded-lg font-semibold flex items-center gap-2 hover:bg-secondary/90"
-                  data-testid="button-text"
-                >
-                  <MessageSquare className="w-5 h-5" />
-                  Text {profile.phone}
-                </Button>
-                <Button 
-                  onClick={handleSave}
-                  variant={isSaved ? "default" : "outline"}
-                  className="floating-action px-6 py-3 rounded-lg font-semibold flex items-center gap-2"
-                  data-testid="button-save"
-                >
-                  <Heart className={`w-5 h-5 ${isSaved ? "fill-current" : ""}`} />
-                  Save
-                </Button>
-              </div>
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-3" role="group" aria-label="Contact actions">
+                  <Button 
+                    onClick={handleCall}
+                    className="floating-action px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold flex items-center gap-2 hover:bg-primary/90"
+                    data-testid="button-call"
+                    aria-label={`Call ${profile.name}`}
+                  >
+                    <Phone className="w-5 h-5" aria-hidden="true" />
+                    Call
+                  </Button>
+                  <Button 
+                    onClick={handleText}
+                    className="floating-action px-6 py-3 bg-secondary text-secondary-foreground rounded-lg font-semibold flex items-center gap-2 hover:bg-secondary/90"
+                    data-testid="button-text"
+                    aria-label={`Send text message to ${profile.phone}`}
+                  >
+                    <MessageSquare className="w-5 h-5" aria-hidden="true" />
+                    Text {profile.phone}
+                  </Button>
+                  <Button 
+                    onClick={handleSave}
+                    variant={isSaved ? "default" : "outline"}
+                    className="floating-action px-6 py-3 rounded-lg font-semibold flex items-center gap-2"
+                    data-testid="button-save"
+                    aria-label={isSaved ? "Remove from saved" : "Save therapist profile"}
+                    aria-pressed={isSaved}
+                  >
+                    <Heart className={`w-5 h-5 ${isSaved ? "fill-current" : ""}`} aria-hidden="true" />
+                    Save
+                  </Button>
+                </div>
 
               {/* Key Info Cards */}
               <div className="grid grid-cols-2 gap-4">
@@ -162,7 +238,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
 
               {/* Testimonials Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30 rounded-full">
-                <Star className="w-5 h-5 text-primary fill-current" />
+                <Star className="w-5 h-5 text-primary fill-current" aria-hidden="true" />
                 <span className="font-semibold" data-testid="text-testimonials-count">{testimonials.length} Testimonials</span>
               </div>
             </div>
@@ -170,11 +246,11 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </section>
 
         {/* Overview Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12" aria-labelledby="overview-heading">
           <Card className="bg-card border-border rounded-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl" aria-hidden="true"></div>
             <CardContent className="p-6 sm:p-10 relative z-10">
-              <h2 className="text-2xl sm:text-3xl font-bold font-display mb-4 sm:mb-6 section-title">Overview</h2>
+              <h2 id="overview-heading" className="text-2xl sm:text-3xl font-bold font-display mb-4 sm:mb-6 section-title">Overview</h2>
               <div className="prose prose-invert max-w-none">
                 <h3 className="text-xl font-semibold text-foreground mb-4">Brazilian Male Massage by Bruno — Deep Tissue, Swedish, & Sports Massage</h3>
                 {profile.bio.split('\n\n').map((paragraph: string, index: number) => (
@@ -188,15 +264,15 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </section>
 
         {/* Travel Schedule */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-6 section-title">Travel Schedule</h2>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12" aria-labelledby="schedule-heading">
+          <h2 id="schedule-heading" className="text-2xl sm:text-3xl font-bold font-display mb-6 section-title">Travel Schedule</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {currentLocation && (
               <Card className="bg-gradient-to-br from-primary/20 to-secondary/10 border-primary/30 rounded-2xl relative overflow-hidden">
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-2xl animate-cosmic-pulse"></div>
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-2xl animate-cosmic-pulse" aria-hidden="true"></div>
                 <CardContent className="p-8 relative z-10">
                   <Badge className="bg-primary text-primary-foreground mb-4">
-                    <MapPin className="w-4 h-4 mr-2" />
+                    <MapPin className="w-4 h-4 mr-2" aria-hidden="true" />
                     Current Visit
                   </Badge>
                   <h3 className="text-2xl font-bold mb-2" data-testid="text-current-location">{currentLocation.location}</h3>
@@ -206,10 +282,10 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
             )}
             
             <Card className="bg-card border-border rounded-2xl relative overflow-hidden">
-              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-accent/10 rounded-full blur-2xl"></div>
+              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-accent/10 rounded-full blur-2xl" aria-hidden="true"></div>
               <CardContent className="p-8 relative z-10">
                 <Badge variant="secondary" className="mb-4">
-                  <User className="w-4 h-4 mr-2" />
+                  <User className="w-4 h-4 mr-2" aria-hidden="true" />
                   Home Base
                 </Badge>
                 <h3 className="text-2xl font-bold mb-2">{profile.homeBase}</h3>
@@ -220,8 +296,8 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </section>
 
         {/* Pricing */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-6 section-title">Rates</h2>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12" aria-labelledby="pricing-heading">
+          <h2 id="pricing-heading" className="text-2xl sm:text-3xl font-bold font-display mb-6 section-title">Rates</h2>
           <Card className="bg-card border-border rounded-xl">
             <CardContent className="p-6 sm:p-10">
               <p className="text-lg text-muted-foreground mb-8">Spa-quality bodywork, tailored to you, blending Deep Tissue, Shiatsu & Swedish</p>
@@ -242,7 +318,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
                   ))}
                 </div>
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/20 border border-accent/30 rounded-lg text-accent">
-                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" aria-hidden="true" />
                   <span className="font-semibold">10% off on Mondays</span>
                 </div>
               </div>
@@ -252,16 +328,16 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
 
         {/* Specials */}
         {specials.length > 0 && (
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12" aria-labelledby="specials-heading">
             {specials.map((special) => (
               <div key={special.id} className="bg-gradient-to-r from-accent via-primary to-secondary p-1 rounded-xl">
                 <Card className="bg-background rounded-lg text-center">
                   <CardContent className="p-6 sm:p-10">
                     <Badge className="bg-accent/20 text-accent font-semibold mb-4">
-                      <Star className="w-5 h-5 mr-2 animate-float fill-current" />
+                      <Star className="w-5 h-5 mr-2 animate-float fill-current" aria-hidden="true" />
                       Limited Time Offer
                     </Badge>
-                    <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4" data-testid="text-special-title">{special.title}</h2>
+                    <h2 id="specials-heading" className="text-3xl sm:text-4xl font-bold font-display mb-4" data-testid="text-special-title">{special.title}</h2>
                     <p className="text-muted-foreground mt-2">{special.description}</p>
                   </CardContent>
                 </Card>
@@ -271,13 +347,13 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         )}
 
         {/* Additional Info */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-6 section-title">Additional Information</h2>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12" aria-labelledby="additional-info-heading">
+          <h2 id="additional-info-heading" className="text-2xl sm:text-3xl font-bold font-display mb-6 section-title">Additional Information</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="bg-card border-border rounded-2xl">
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Shield className="w-6 h-6 text-primary" />
+                  <Shield className="w-6 h-6 text-primary" aria-hidden="true" />
                   Techniques
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -291,7 +367,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
             <Card className="bg-card border-border rounded-2xl">
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Clock className="w-6 h-6 text-secondary" />
+                  <Clock className="w-6 h-6 text-secondary" aria-hidden="true" />
                   Experience
                 </h3>
                 <p className="text-2xl font-bold text-secondary">{profile.experience}+ Years</p>
@@ -302,13 +378,13 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
             <Card className="bg-card border-border rounded-2xl">
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <User className="w-6 h-6 text-accent" />
+                  <User className="w-6 h-6 text-accent" aria-hidden="true" />
                   In-Studio Amenities
                 </h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   {profile.amenities.map((amenity: string) => (
                     <li key={amenity} className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-accent rounded-full"></div>
+                      <div className="w-2 h-2 bg-accent rounded-full" aria-hidden="true"></div>
                       {amenity}
                     </li>
                   ))}
@@ -319,7 +395,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
             <Card className="bg-card border-border rounded-2xl">
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Shield className="w-6 h-6 text-primary" />
+                  <Shield className="w-6 h-6 text-primary" aria-hidden="true" />
                   Affiliations
                 </h3>
                 {profile.affiliations.map((affiliation: string) => (
@@ -331,8 +407,8 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </section>
 
         {/* Testimonials */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-3 section-title">Client Testimonials</h2>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12" aria-labelledby="testimonials-heading">
+          <h2 id="testimonials-heading" className="text-2xl sm:text-3xl font-bold font-display mb-3 section-title">Client Testimonials</h2>
           <p className="text-sm text-muted-foreground mb-6">Gathered by Bruno from admiring massage clients to share with you.</p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -343,33 +419,52 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
         </section>
 
         {/* Footer Gallery */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16" aria-label="Image gallery">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {profile.gallery.map((image: string, index: number) => (
-              <div key={index} className="relative rounded-xl overflow-hidden aspect-square bg-muted">
-                <img 
-                  src={image} 
-                  alt={`Gallery image ${index + 1}`}
-                  className="w-full h-full object-cover gallery-image cursor-pointer"
-                  data-testid={`img-gallery-${index}`}
-                />
-              </div>
-            ))}
+            {profile.gallery.map((image: string, index: number) => {
+              // Generate more descriptive alt text based on context
+              const altDescriptions = [
+                `${profile.name}'s massage therapy studio interior`,
+                `Professional massage table setup at ${profile.name}'s practice`,
+                `Relaxing massage therapy environment by ${profile.name}`,
+                `${profile.name}'s massage workspace showing professional amenities`,
+                `Massage therapy room ambiance at ${profile.name}'s studio`,
+                `${profile.name}'s professional massage therapy setup`,
+                `Interior view of ${profile.name}'s massage practice`,
+                `${profile.name}'s massage therapy workspace details`
+              ];
+              const altText = altDescriptions[index] || `${profile.name}'s massage therapy workspace - image ${index + 1}`;
+              
+              return (
+                <div key={index} className="relative rounded-xl overflow-hidden aspect-square bg-muted">
+                  <img 
+                    src={image} 
+                    alt={altText}
+                    className="w-full h-full object-cover gallery-image cursor-pointer"
+                    width="300"
+                    height="300"
+                    loading="lazy"
+                    data-testid={`img-gallery-${index}`}
+                  />
+                </div>
+              );
+            })}
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-border mt-16">
+        <footer className="border-t border-border mt-16" role="contentinfo">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
               <div>© 2025 MasseurMatch. All rights reserved.</div>
               <div className="flex gap-6">
                 <a href="#" className="hover:text-foreground transition">Terms of Service</a>
                 <a href="#" className="hover:text-foreground transition">Privacy Policy</a>
-              </div>
+              </nav>
             </div>
           </div>
         </footer>
+        </main>
       </div>
     </div>
   );
