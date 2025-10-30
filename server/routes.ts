@@ -27,7 +27,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         testimonials,
         specials,
       });
-    } catch (error) {
+    } catch (_error) {
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -38,7 +38,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const testimonials = await storage.getTestimonials(id);
       res.json(testimonials);
-    } catch (error) {
+    } catch (_error) {
       res.status(500).json({ message: "Internal server error" });
     }
   });
