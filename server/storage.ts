@@ -9,7 +9,7 @@ import {
   type InsertTestimonial,
   type Special,
   type InsertSpecial
-} from "@shared/schema";
+} from "../shared/schema.ts";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
