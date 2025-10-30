@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage } from "./storage.ts";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get therapist profile with all related data
