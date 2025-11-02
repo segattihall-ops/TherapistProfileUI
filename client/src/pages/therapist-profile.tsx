@@ -460,7 +460,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
               <div className="flex gap-6">
                 <a href="#" className="hover:text-foreground transition">Terms of Service</a>
                 <a href="#" className="hover:text-foreground transition">Privacy Policy</a>
-              </nav>
+              </div>
             </div>
           </div>
         </footer>
