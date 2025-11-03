@@ -8,7 +8,7 @@ import { config } from './config/index.ts';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get therapist profile with all related data
-  app.get("/api/therapist/:id", cache(config.cacheTimeSeconds), async (req, res) => {
+  app.get("/api/therapist/:id", cache(config.cacheTTL), async (req, res) => {
     try {
       const { id } = req.params;
       

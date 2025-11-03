@@ -1,7 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
-import cors from 'cors';
-import rateLimit from 'express-rate-limit';
-import helmet from 'helmet';
+import { securityMiddleware } from "./middleware/security.ts";
 import { registerRoutes } from "./routes.ts";
 import { setupVite, serveStatic, log } from "./vite.ts";
 import { config } from "./config/index.ts";
@@ -11,12 +9,7 @@ import process from "node:process";
 const app = express();
 
 // Add security middleware
-app.use(helmet());
-app.use(cors());
-app.use(rateLimit({
-  windowMs: config.rateLimit.windowMs,
-  max: config.rateLimit.max
-}));
+app.use(...securityMiddleware);
 
 declare module 'http' {
   interface IncomingMessage {
