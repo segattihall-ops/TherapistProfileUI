@@ -85,7 +85,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
     
     let metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', `${profile.name}, ${profile.title} in ${profile.location}. Specializing in ${(profile.techniques ?? []).join(', ')}. ${profile.experience}+ years experience.`);
+      metaDescription.setAttribute('content', `${profile.name}, ${profile.title} in ${profile.location}. Specializing in ${(profile.techniques || []).join(', ')}. ${profile.experience}+ years experience.`);
     }
 
     return () => {
@@ -231,7 +231,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
                 <Card className="bg-card border-border">
                   <CardContent className="p-4">
                     <div className="text-sm text-muted-foreground mb-1">Specialties</div>
-                    <div className="font-semibold">{profile.techniques.join(", ")}</div>
+                    <div className="font-semibold">{(profile.techniques || []).join(", ")}</div>
                   </CardContent>
                 </Card>
               </div>
@@ -357,7 +357,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
                   Techniques
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {profile.techniques.map((technique: string) => (
+                  {(profile.techniques || []).map((technique: string) => (
                     <Badge key={technique} className="bg-primary/20 border-primary/30">{technique}</Badge>
                   ))}
                 </div>
@@ -382,7 +382,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
                   In-Studio Amenities
                 </h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  {profile.amenities.map((amenity: string) => (
+                  {(profile.amenities || []).map((amenity: string) => (
                     <li key={amenity} className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-accent rounded-full" aria-hidden="true"></div>
                       {amenity}
@@ -398,7 +398,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
                   <Shield className="w-6 h-6 text-primary" aria-hidden="true" />
                   Affiliations
                 </h3>
-                {profile.affiliations.map((affiliation: string) => (
+                {(profile.affiliations || []).map((affiliation: string) => (
                   <p key={affiliation} className="text-muted-foreground">{affiliation}</p>
                 ))}
               </CardContent>
