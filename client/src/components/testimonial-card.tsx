@@ -6,7 +6,7 @@ interface TestimonialCardProps {
   testimonial: {
     id: string;
     clientInitials: string;
-    date: Date;
+    date: Date | string;
     location: string;
     rating: number;
     content: string;

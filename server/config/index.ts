@@ -8,4 +8,5 @@ export const config = {
     max: 100, // limit each IP to 100 requests per windowMs
   },
   jsonLimit: '10mb',
+  cacheTimeSeconds: 300, // 5 minutes
 };

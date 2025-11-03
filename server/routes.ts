@@ -4,10 +4,11 @@ import { storage } from "./storage.ts";
 import { CustomError } from './types/errors.ts';
 import { logger } from './utils/logger.ts';
 import { cache } from './utils/cache.ts';
+import { config } from './config/index.ts';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get therapist profile with all related data
-  app.get("/api/therapist/:id", cache(300), async (req, res) => {
+  app.get("/api/therapist/:id", cache(config.cacheTimeSeconds), async (req, res) => {
     try {
       const { id } = req.params;
       
