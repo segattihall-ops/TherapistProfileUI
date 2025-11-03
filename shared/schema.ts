@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, jsonb, timestamp, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -25,10 +25,12 @@ export const travelSchedule = pgTable("travel_schedule", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   therapistId: varchar("therapist_id").references(() => therapistProfiles.id).notNull(),
   location: text("location").notNull(),
-  startDate: text("start_date").notNull(),
-  endDate: text("end_date").notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
   isCurrent: integer("is_current").notNull().default(0),
-});
+}, (table) => ({
+  therapistScheduleIdx: index('idx_therapist_schedule').on(table.therapistId),
+}));
 
 export const pricing = pgTable("pricing", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -43,21 +45,25 @@ export const testimonials = pgTable("testimonials", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   therapistId: varchar("therapist_id").references(() => therapistProfiles.id).notNull(),
   clientInitials: text("client_initials").notNull(),
-  date: text("date").notNull(),
+  date: timestamp("date").notNull(),
   location: text("location").notNull(),
   serviceType: text("service_type").notNull(),
   rating: integer("rating").notNull(),
   content: text("content").notNull(),
-});
+}, (table) => ({
+  therapistTestimonialsIdx: index('idx_therapist_testimonials').on(table.therapistId),
+}));
 
 export const specials = pgTable("specials", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   therapistId: varchar("therapist_id").references(() => therapistProfiles.id).notNull(),
   title: text("title").notNull(),
   description: text("description").notNull(),
-  validUntil: text("valid_until").notNull(),
+  validUntil: timestamp("valid_until").notNull(),
   isActive: integer("is_active").notNull().default(1),
-});
+}, (table) => ({
+  therapistSpecialsIdx: index('idx_therapist_specials').on(table.therapistId),
+}));
 
 export const insertTherapistProfileSchema = createInsertSchema(therapistProfiles).omit({
   id: true,

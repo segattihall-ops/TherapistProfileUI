@@ -1,10 +1,14 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage.ts";
+import { CustomError } from './types/errors.ts';
+import { logger } from './utils/logger.ts';
+import { cache } from './utils/cache.ts';
+import { config } from './config/index.ts';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get therapist profile with all related data
-  app.get("/api/therapist/:id", async (req, res) => {
+  app.get("/api/therapist/:id", cache(config.cacheTimeSeconds), async (req, res) => {
     try {
       const { id } = req.params;
       
@@ -27,7 +31,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         testimonials,
         specials,
       });
-    } catch (_error) {
+    } catch (error) {
+      logger.error('Error fetching therapist profile:', error);
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -38,8 +46,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const testimonials = await storage.getTestimonials(id);
       res.json(testimonials);
-    } catch (_error) {
-      console.error(_error);
+    } catch (error) {
+      logger.error('Error fetching testimonials:', error);
       res.status(500).json({ message: "Internal server error" });
     }
   });

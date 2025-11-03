@@ -1,11 +1,12 @@
 import { Star } from "lucide-react";
 import { Card, CardContent } from "./ui/card.tsx";
+import { format } from "date-fns";
 
 interface TestimonialCardProps {
   testimonial: {
     id: string;
     clientInitials: string;
-    date: string;
+    date: Date | string;
     location: string;
     rating: number;
     content: string;
@@ -22,7 +23,7 @@ export default function TestimonialCard({ testimonial }: TestimonialCardProps) {
           </div>
           <div className="min-w-0 flex-1">
             <div className="text-xs font-medium text-muted-foreground" data-testid={`text-testimonial-date-${testimonial.id}`}>
-              {testimonial.date}
+              {format(new Date(testimonial.date), "MMMM dd, yyyy")}
             </div>
             <div className="text-xs text-muted-foreground" data-testid={`text-testimonial-location-${testimonial.id}`}>
               {testimonial.location}
