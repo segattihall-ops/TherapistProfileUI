@@ -3,10 +3,10 @@ export default {
   testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
+    'client/src/**/*.{ts,tsx}',
     'server/**/*.{ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/**/*.test.{ts,tsx}',
+    '!client/src/**/*.d.ts',
+    '!client/src/**/*.test.{ts,tsx}',
     '!server/**/*.d.ts',
     '!server/**/*.test.{ts,tsx}',
   ],

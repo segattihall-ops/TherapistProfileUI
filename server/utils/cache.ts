@@ -45,10 +45,14 @@ export const cacheMiddleware = (duration: number) => (req: Request, res: Respons
     return res.json(JSON.parse(cached));
   }
   
-  const originalJson = res.json;
+  // Store original json method and override to cache response
+  // This is intentional monkey-patching for the duration of this request
+  const originalJson = res.json.bind(res);
   res.json = function(body: any) {
     cacheManager.set(key, JSON.stringify(body), duration);
-    return originalJson.call(this, body);
+    // Restore original method after caching
+    res.json = originalJson;
+    return originalJson(body);
   };
   
   next();

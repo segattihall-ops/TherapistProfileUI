@@ -4,6 +4,7 @@
 
 /**
  * Announce message to screen readers
+ * Returns a cleanup function to cancel the announcement if needed
  */
 export const announceToScreenReader = (message: string, priority: 'polite' | 'assertive' = 'polite') => {
   const announcement = document.createElement('div');
@@ -16,11 +17,19 @@ export const announceToScreenReader = (message: string, priority: 'polite' | 'as
   document.body.appendChild(announcement);
   
   // Remove after announcement
-  setTimeout(() => {
+  const timeoutId = setTimeout(() => {
     if (announcement.parentNode) {
       announcement.parentNode.removeChild(announcement);
     }
   }, 1000);
+  
+  // Return cleanup function
+  return () => {
+    clearTimeout(timeoutId);
+    if (announcement.parentNode) {
+      announcement.parentNode.removeChild(announcement);
+    }
+  };
 };
 
 /**
