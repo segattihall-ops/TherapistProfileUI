@@ -11,11 +11,18 @@ export function errorHandler(
   logger.error('Error occurred:', err);
 
   if (err instanceof CustomError) {
-    return res.status(err.statusCode).json({ message: err.message });
+    return res.status(err.statusCode).json({
+      status: 'error',
+      message: err.message,
+      code: err.errorCode,
+    });
   }
 
-  const status = err.status || err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
-
-  res.status(status).json({ message });
+  // Production vs Development error responses
+  const isProduction = process.env.NODE_ENV === 'production';
+  res.status(500).json({
+    status: 'error',
+    message: isProduction ? 'Internal server error' : err.message,
+    ...(isProduction ? {} : { stack: err.stack }),
+  });
 }
