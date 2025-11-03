@@ -39,6 +39,17 @@
     <link rel="preload" as="font" href="https://fonts.gstatic.com/s/spacegrotesk/v6/i7dPIFZ6fDS2J1l0Uj8j2w.ttf" type="font/ttf" crossorigin="anonymous" />
     <!-- Only load fonts actually used in the app - Inter and Space Grotesk -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+    
+    <script>
+      // Handle SPA routing redirect
+      (function(){
+        let redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
