@@ -8,6 +8,7 @@ import ImageGallery from "../components/image-gallery";
 import TestimonialCard from "../components/testimonial-card";
 import PriceCard from "../components/price-card";
 import { Phone, MessageSquare, Heart, Star, MapPin, Clock, User, Shield } from "lucide-react";
+import { format } from "date-fns";
 import type { TherapistProfile as TherapistProfileType, TravelSchedule, Pricing, Testimonial, Special } from "@shared/schema";
 
 interface TherapistProfileProps {
@@ -276,7 +277,7 @@ export default function TherapistProfile({ therapistId: propTherapistId }: Thera
                     Current Visit
                   </Badge>
                   <h3 className="text-2xl font-bold mb-2" data-testid="text-current-location">{currentLocation.location}</h3>
-                  <p className="text-muted-foreground">{currentLocation.startDate} - {currentLocation.endDate}, 2025</p>
+                  <p className="text-muted-foreground">{format(new Date(currentLocation.startDate), "MMM. dd")} - {format(new Date(currentLocation.endDate), "MMM. dd, yyyy")}</p>
                 </CardContent>
               </Card>
             )}

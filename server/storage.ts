@@ -83,8 +83,8 @@ export class MemStorage implements IStorage {
       id: randomUUID(),
       therapistId: brunoId,
       location: "San Antonio, TX",
-      startDate: "Oct. 8",
-      endDate: "Oct. 10",
+      startDate: new Date("2025-10-08"),
+      endDate: new Date("2025-10-10"),
       isCurrent: 1,
     };
     this.travelSchedules.set(currentSchedule.id, currentSchedule);
@@ -113,37 +113,37 @@ export class MemStorage implements IStorage {
     const testimonialData = [
       {
         clientInitials: "JD",
-        date: "July 02, 2025",
+        date: new Date("2025-07-02"),
         location: "Dallas, TX (in-studio)",
         content: "I've been seeing Bruno here in Dallas for almost a year now, and he's hands-down the best massage therapist I've ever found. He's incredibly skilled at deep tissue and relaxation massage, and one of the sweetest and most charming people you'll ever meet."
       },
       {
         clientInitials: "MC",
-        date: "April 02, 2025",
+        date: new Date("2025-04-02"),
         location: "Dallas, TX (in-studio)",
         content: "One word: AMAZING! Bruno is such an amazing guy. His place is clean and centrally located. His massage skills are second to none, coupled with his relaxed and cheery personality. I felt 10 years younger when I left!"
       },
       {
         clientInitials: "RJ",
-        date: "Jan. 04, 2025",
+        date: new Date("2025-01-04"),
         location: "Rio de Janeiro, BR",
         content: "Yesterday I had an amazing massage from this incredibly nice and sweet man. He greeted me with a great smile and warm hug. He's an incredible masseur—kind, friendly, knowledgeable, super sweet and very handsome with a beautiful smile."
       },
       {
         clientInitials: "TM",
-        date: "Sept. 30, 2024",
+        date: new Date("2024-09-30"),
         location: "San Jose, CA",
         content: "Oh man! This guy knows how to massage and found knots and tight muscles I never knew existed! This was a real proper full-on massage that left me shattered but light-headed. I went home and just crashed out for the rest of the day!"
       },
       {
         clientInitials: "DP",
-        date: "July 02, 2024",
+        date: new Date("2024-07-02"),
         location: "Dallas, TX",
         content: "Bruno is super calm and explains what he's doing. It's very relaxing & exciting all at the same time. He has exceptional massage skills but what he's doing is so imaginative & creative. This is a super deluxe experience—Bruno is in a league of his own."
       },
       {
         clientInitials: "WH",
-        date: "March 05, 2024",
+        date: new Date("2024-03-05"),
         location: "Dallas, TX",
         content: "I had a relaxing and invigorating massage yesterday and today I feel like a new man. Bruno is a professional from the first text message until you leave. Communication was prompt and thorough. Surreal massage, the best I've ever had. Bruno is my new go-to guy!"
       }
@@ -169,7 +169,7 @@ export class MemStorage implements IStorage {
       therapistId: brunoId,
       title: "THIS WEEK (until Oct. 11)",
       description: "$30 Outcall Fee - Mobile massage available throughout San Antonio",
-      validUntil: "Oct. 11",
+      validUntil: new Date("2025-10-11"),
       isActive: 1,
     };
     this.specials.set(special.id, special);

@@ -1,9 +1,21 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 import { registerRoutes } from "./routes.ts";
 import { setupVite, serveStatic, log } from "./vite.ts";
+import { config } from "./config/index.ts";
 import process from "node:process";
 
 const app = express();
+
+// Add security middleware
+app.use(helmet());
+app.use(cors());
+app.use(rateLimit({
+  windowMs: config.rateLimit.windowMs,
+  max: config.rateLimit.max
+}));
 
 declare module 'http' {
   interface IncomingMessage {
@@ -11,6 +23,7 @@ declare module 'http' {
   }
 }
 app.use(express.json({
+  limit: config.jsonLimit,
   verify: (req, _res, buf) => {
     req.rawBody = buf;
   }
@@ -71,12 +84,11 @@ app.use((req, res, next) => {
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
   server.listen({
-    port,
+    port: config.port,
     host: "0.0.0.0",
     reusePort: true,
   }, () => {
-    log(`serving on port ${port}`);
+    log(`serving on port ${config.port}`);
   });
 })();
