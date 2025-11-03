@@ -17,7 +17,9 @@ export const announceToScreenReader = (message: string, priority: 'polite' | 'as
   
   // Remove after announcement
   setTimeout(() => {
-    document.body.removeChild(announcement);
+    if (announcement.parentNode) {
+      announcement.parentNode.removeChild(announcement);
+    }
   }, 1000);
 };
 

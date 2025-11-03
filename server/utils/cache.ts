@@ -37,9 +37,9 @@ export function cache(seconds: number) {
   };
 }
 
-export const cacheMiddleware = (duration: number) => async (req: Request, res: Response, next: NextFunction) => {
+export const cacheMiddleware = (duration: number) => (req: Request, res: Response, next: NextFunction) => {
   const key = `cache:${req.originalUrl}`;
-  const cached = await cacheManager.get(key);
+  const cached = cacheManager.get(key);
   
   if (cached) {
     return res.json(JSON.parse(cached));

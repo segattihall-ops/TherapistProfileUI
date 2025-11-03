@@ -9,7 +9,7 @@ import process from "node:process";
 const app = express();
 
 // Add security middleware
-app.use(securityMiddleware);
+app.use(...securityMiddleware);
 
 declare module 'http' {
   interface IncomingMessage {

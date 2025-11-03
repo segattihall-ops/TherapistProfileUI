@@ -2,10 +2,10 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  PORT: z.string().transform(Number).default('5000'),
+  PORT: z.coerce.number().default(5000),
   DATABASE_URL: z.string().optional(),
   CORS_ORIGIN: z.string().optional(),
-  CACHE_TTL: z.string().transform(Number).default('300'),
+  CACHE_TTL: z.coerce.number().default(300),
   SESSION_SECRET: z.string().optional(),
 });
 
