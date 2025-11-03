@@ -15,6 +15,9 @@ export const securityMiddleware = [
     },
   }),
   cors({
+    // Security: In production, CORS is disabled (false) unless CORS_ORIGIN is explicitly set
+    // In development, wildcard is allowed for convenience
+    // Set CORS_ORIGIN environment variable to your specific domain in production
     origin: process.env.CORS_ORIGIN || (process.env.NODE_ENV === 'production' ? false : '*'),
     credentials: true,
   }),
