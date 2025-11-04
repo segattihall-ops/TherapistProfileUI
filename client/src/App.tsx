@@ -21,7 +21,10 @@ function App() {
 
   useEffect(() => {
     fetch('/api/therapist/bruno')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch therapist data');
+        return res.json();
+      })
       .then(data => {
         setTherapist(data);
         setLoading(false);
