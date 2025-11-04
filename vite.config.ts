@@ -5,6 +5,7 @@ import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 import process from "node:process";
 
 export default defineConfig({
+  base: '/TherapistProfileUI/', // Base URL for GitHub Pages
   plugins: [
     react(),
     runtimeErrorOverlay(),
