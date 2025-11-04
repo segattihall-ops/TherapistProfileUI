@@ -14,12 +14,32 @@ interface Therapist {
   certifications: string[];
 }
 
+// Mock data for production (GitHub Pages doesn't support server-side API)
+const mockTherapist: Therapist = {
+  id: 'bruno',
+  name: 'Bruno Silva',
+  specialty: 'Deep Tissue & Sports Massage',
+  bio: 'Professional massage therapist with over 10 years of experience specializing in deep tissue and sports massage therapy.',
+  experience: '10+ years',
+  location: 'San Francisco, CA',
+  rating: 4.9,
+  reviewCount: 127,
+  hourlyRate: 120,
+  availability: ['Mon-Fri: 9AM-6PM', 'Sat: 10AM-4PM'],
+  certifications: [
+    'Licensed Massage Therapist (LMT)',
+    'Certified Sports Massage Therapist',
+    'Deep Tissue Specialist'
+  ]
+};
+
 function App() {
   const [therapist, setTherapist] = useState<Therapist | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Try to fetch from API in development, fallback to mock data in production
     fetch('/api/therapist/bruno')
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch therapist data');
@@ -29,8 +49,9 @@ function App() {
         setTherapist(data);
         setLoading(false);
       })
-      .catch(err => {
-        setError(err.message);
+      .catch(() => {
+        // Use mock data if API is not available (production/GitHub Pages)
+        setTherapist(mockTherapist);
         setLoading(false);
       });
   }, []);
